@@ -14,14 +14,12 @@ extern "C" {
 }
 
 fn main() {
-    wasm_logger::init(wasm_logger::Config::default());
-    console_error_panic_hook::set_once();
     yew::start_app::<App>();
 }
 
 #[function_component(App)]
 fn effect() -> Html {
-    let resolver_msgs = use_state_eq(|| Vec::new());
+    let resolver_msgs = use_state_eq(Vec::new);
     let name = use_state_eq(|| "blog.adamchalmers.com".to_string());
 
     let onchange = {
@@ -52,8 +50,8 @@ fn effect() -> Html {
                 .await;
                 match resp {
                     Ok(message) => {
-                        let s = message.clone().as_string().unwrap();
-                        let out = s.split(",").map(|s| html! {<li>{s}</li>}).collect();
+                        let s = message.as_string().unwrap();
+                        let out = s.split(',').map(|s| html! {<li>{s}</li>}).collect();
                         resolver_output.set(out);
                     }
                     Err(e) => {
