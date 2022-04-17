@@ -8,7 +8,7 @@ mod dns;
 #[tauri::command]
 fn resolve(hostname: &str) -> Result<String, String> {
     let ips = dns::resolve(hostname).map_err(|e| e.to_string())?;
-    let out = ips.into_iter().collect::<Vec<_>>().join(", ");
+    let out = ips.into_iter().collect::<Vec<_>>().join(",");
     Ok(out)
 }
 

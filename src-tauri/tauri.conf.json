@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "dingo-window",
+    "productName": "dingo-gui",
     "version": "0.1.0"
   },
   "build": {
@@ -54,7 +54,7 @@
     },
     "windows": [
       {
-        "title": "DNS Toy",
+        "title": "Dingo DNS",
         "width": 800,
         "height": 600,
         "resizable": true,

@@ -21,7 +21,7 @@ fn main() {
 
 #[function_component(App)]
 fn effect() -> Html {
-    let resolver_output = use_state_eq(|| "resolver output".to_string());
+    let resolver_msgs = use_state_eq(|| Vec::new());
     let name = use_state_eq(|| "blog.adamchalmers.com".to_string());
 
     let onchange = {
@@ -34,7 +34,7 @@ fn effect() -> Html {
     };
 
     let onclick = {
-        let resolver_output = resolver_output.clone();
+        let resolver_output = resolver_msgs.clone();
         let hostname = name.to_string();
         let task = move |_| {
             let resolver_output = resolver_output.clone();
@@ -52,7 +52,8 @@ fn effect() -> Html {
                 .await;
                 match resp {
                     Ok(message) => {
-                        let out = message.as_string().unwrap();
+                        let s = message.clone().as_string().unwrap();
+                        let out = s.split(",").map(|s| html! {<li>{s}</li>}).collect();
                         resolver_output.set(out);
                     }
                     Err(e) => {
@@ -68,13 +69,18 @@ fn effect() -> Html {
         Callback::from(task)
     };
 
-    let resolver_message = (*resolver_output).clone();
+    let resolver_out = (*resolver_msgs).clone();
 
     html! {
         <div>
             <input {onchange} value={(*name).clone()} />
             <button {onclick}>{"Resolve"}</button>
-            <h1>{ resolver_message }</h1>
+            if !resolver_out.is_empty() {
+                <h2>{"DNS Records"}</h2>
+                <ul class="item-list">
+                    { for resolver_out }
+                </ul>
+            }
             </div>
     }
 }
