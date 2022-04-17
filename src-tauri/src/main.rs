@@ -3,20 +3,18 @@
     windows_subsystem = "windows"
 )]
 
+mod dns;
+
 #[tauri::command]
-fn hello(name: &str) -> Result<String, String> {
-    // This is a very simplistic example but it shows how to return a Result
-    // and use it in the front-end.
-    if name.contains(' ') {
-        Err("Name should not contain spaces".to_string())
-    } else {
-        Ok(format!("Hello, {}", name))
-    }
+fn resolve(hostname: &str) -> Result<String, String> {
+    let ips = dns::resolve(hostname).map_err(|e| e.to_string())?;
+    let out = ips.into_iter().collect::<Vec<_>>().join(", ");
+    Ok(out)
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![hello])
+        .invoke_handler(tauri::generate_handler![resolve])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

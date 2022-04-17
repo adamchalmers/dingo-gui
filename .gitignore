@@ -4,3 +4,4 @@ frontend/target
 src-tauri/target
 WixTools
 frontend/dist
+target/
